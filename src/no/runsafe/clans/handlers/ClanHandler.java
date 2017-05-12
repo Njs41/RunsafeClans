@@ -125,7 +125,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	{
 		clanID = clanID.toUpperCase(); // Make sure the clan ID is upper-case.
 		if (clanExists(clanID)) return; // Be sure we don't have a clan with this name already.
-		Clan newClan = new Clan(clanID, playerLeader, "Welcome to " + clanID); // Create a new clan object.
+		Clan newClan = new Clan(clanID, server.getPlayerExact(playerLeader), "Welcome to " + clanID); // Create a new clan object.
 		clans.put(clanID, newClan); // Push the clan into the clan handler.
 		clanRepository.persistClan(newClan); // Persist the clan in the database.
 	}
@@ -145,7 +145,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	{
 		removeAllPendingInvites(playerName); // Remove all pending invites.
 		Clan clan = clans.get(clanID);
-		clan.addMember(playerName); // Add to cache.
+		clan.addMember(server.getPlayerExact(playerName)); // Add to cache.
 		playerClanIndex.put(playerName, clanID); // Add to index.
 		memberRepository.addClanMember(clan.getId(), playerName);
 		new ClanJoinEvent(server.getPlayerExact(playerName), clan).Fire(); // Fire a join event.
@@ -176,7 +176,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	private void removeClanMember(Clan clan, IPlayer player)
 	{
 		String playerName = player.getName();
-		clans.get(clan.getId()).removeMember(playerName); // Remove from cache.
+		clans.get(clan.getId()).removeMember(player); // Remove from cache.
 		playerClanIndex.remove(playerName); // Remove from index.
 		memberRepository.removeClanMemberByName(player.getName());
 		new ClanLeaveEvent(player, clan).Fire(); // Fire a leave event.
@@ -184,8 +184,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 
 	public void changeClanLeader(String clanID, IPlayer newLeader)
 	{
-		String playerName = newLeader.getName();
-		clans.get(clanID).setLeader(playerName);
+		clans.get(clanID).setLeader(newLeader);
 		clanRepository.changeClanLeader(clanID, newLeader);
 		sendMessageToClan(clanID, newLeader.getPrettyName() + " has been given leadership of the clan.");
 	}
@@ -425,7 +424,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 				for (String clanMember : roster.getValue())
 				{
 					playerClanIndex.put(clanMember, clanName); // Map the player to the clan index.
-					clans.get(clanName).addMember(clanMember); // Add the member to the clan.
+					clans.get(clanName).addMember(server.getPlayerExact(clanMember)); // Add the member to the clan.
 					memberCount++; // Increase our counter.
 				}
 			}
@@ -507,12 +506,11 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	private void PurgeMembers(Clan clan, String clanID)
 	{
 		memberRepository.removeAllClanMembers(clanID); // Wipe the roster.
-		for (String clanMember : clan.getMembers())
+		for (IPlayer clanMember : clan.getMembers())
 		{
-			IPlayer player = server.getPlayerExact(clanMember);
-			playerClanIndex.remove(clanMember); // Remove the players clan index.
-			memberRepository.removeClanMemberByName(clanMember);
-			new ClanLeaveEvent(player, clan).Fire(); // Fire a leave event.
+			playerClanIndex.remove(clanMember.getName()); // Remove the players clan index.
+			memberRepository.removeClanMember(clanMember);
+			new ClanLeaveEvent(clanMember, clan).Fire(); // Fire a leave event.
 		}
 	}
 

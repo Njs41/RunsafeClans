@@ -1,11 +1,13 @@
 package no.runsafe.clans;
 
+import no.runsafe.framework.api.player.IPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Clan
 {
-	public Clan(String id, String leader, String motd)
+	public Clan(String id, IPlayer leader, String motd)
 	{
 		this.id = id;
 		this.leader = leader;
@@ -22,7 +24,7 @@ public class Clan
 		this.motd = motd;
 	}
 
-	public void setLeader(String leader)
+	public void setLeader(IPlayer leader)
 	{
 		this.leader = leader;
 	}
@@ -32,12 +34,12 @@ public class Clan
 		return id;
 	}
 
-	public String getLeader()
+	public IPlayer getLeader()
 	{
 		return leader;
 	}
 
-	public List<String> getMembers()
+	public List<IPlayer> getMembers()
 	{
 		return members;
 	}
@@ -47,14 +49,14 @@ public class Clan
 		return members.size();
 	}
 
-	public void addMember(String playerName)
+	public void addMember(IPlayer player)
 	{
-		members.add(playerName);
+		members.add(player);
 	}
 
-	public void removeMember(String playerName)
+	public void removeMember(IPlayer player)
 	{
-		members.remove(playerName);
+		members.remove(player);
 	}
 
 	public void addClanKills(int amount)
@@ -88,10 +90,10 @@ public class Clan
 	}
 
 	private final String id;
-	private String leader;
+	private IPlayer leader;
 	private String motd;
 	private int clanKills = 0;
 	private int clanDeaths = 0;
 	private int dergonKills = 0;
-	private final List<String> members = new ArrayList<String>(0);
+	private final List<IPlayer> members = new ArrayList<IPlayer>(0);
 }

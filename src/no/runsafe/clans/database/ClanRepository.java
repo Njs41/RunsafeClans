@@ -1,6 +1,7 @@
 package no.runsafe.clans.database;
 
 import no.runsafe.clans.Clan;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.database.*;
 import no.runsafe.framework.api.player.IPlayer;
 
@@ -10,9 +11,10 @@ import java.util.Map;
 
 public class ClanRepository extends Repository
 {
-	public ClanRepository(IDatabase database)
+	public ClanRepository(IDatabase database, IServer server)
 	{
 		this.database = database;
+		this.server = server;
 	}
 
 	public Map<String, Clan> getClans()
@@ -22,7 +24,7 @@ public class ClanRepository extends Repository
 		for (IRow row : database.query("SELECT `clanID`, `leader`, `motd`, `clanKills`, `clanDeaths`, `dergonKills` FROM `clans`"))
 		{
 			String clanName = row.String("clanID");
-			Clan clan = new Clan(clanName, row.String("leader"), row.String("motd"));
+			Clan clan = new Clan(clanName, server.getPlayerExact(row.String("leader")), row.String("motd"));
 			clan.addClanKills(row.Integer("clanKills")); // Add in kills stat
 			clan.addClanDeaths(row.Integer("clanDeaths")); // Add in deaths stat
 			clan.addDergonKills(row.Integer("dergonKills")); // Add dergon kills.
@@ -89,4 +91,6 @@ public class ClanRepository extends Repository
 
 		return update;
 	}
+
+	private final IServer server;
 }
