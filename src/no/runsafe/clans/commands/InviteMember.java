@@ -26,7 +26,7 @@ public class InviteMember extends PlayerAsyncCommand
 		if (!clanHandler.playerIsInClan(playerName))
 			return "&cYou are not in a clan.";
 
-		if (!clanHandler.playerIsClanLeader(playerName))
+		if (!clanHandler.playerIsClanLeader(executor))
 			return "&cYou are not the clan leader, you cannot invite players.";
 
 		IPlayer targetPlayer = parameters.getValue("player") ;

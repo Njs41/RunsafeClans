@@ -22,7 +22,7 @@ public class LeaveClan extends PlayerAsyncCommand
 		if (!clanHandler.playerIsInClan(playerName))
 			return "&cYou are not in a clan.";
 
-		if (clanHandler.playerIsClanLeader(playerName))
+		if (clanHandler.playerIsClanLeader(executor))
 			return "&cYou cannot leave your clan, disband it first!";
 
 		clanHandler.removeClanMember(executor);

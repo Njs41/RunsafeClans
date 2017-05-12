@@ -56,7 +56,7 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 			if (thePlayer != null)
 			{
 				new BackstabberEvent(thePlayer).Fire();
-				if (clanHandler.playerIsClanLeader(deadPlayerName))
+				if (clanHandler.playerIsClanLeader(deadPlayer))
 					new MutinyEvent(thePlayer).Fire();
 			}
 		}

@@ -209,10 +209,10 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		return clans.containsKey(clanID) ? clans.get(clanID) : null;
 	}
 
-	public boolean playerIsClanLeader(String playerName)
+	public boolean playerIsClanLeader(IPlayer player)
 	{
-		Clan playerClan = getPlayerClan(playerName);
-		return playerClan != null && playerClan.getLeader().equals(playerName);
+		Clan playerClan = getPlayerClan(player.getName());
+		return playerClan != null && playerClan.getLeader().equals(player);
 	}
 
 	public boolean playerHasPendingInvite(String clanID, String playerName)

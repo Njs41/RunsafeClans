@@ -23,7 +23,7 @@ public class PassLeadership extends PlayerAsyncCommand
 		if (!clanHandler.playerIsInClan(playerName))
 			return "&cYou are not in a clan.";
 
-		if (!clanHandler.playerIsClanLeader(playerName))
+		if (!clanHandler.playerIsClanLeader(executor))
 			return "&cYou are not the leader of your clan.";
 
 		IPlayer targetPlayer = parameters.getValue("player") ;

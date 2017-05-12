@@ -21,7 +21,7 @@ public class DisbandClan extends PlayerAsyncCommand
 		if (!clanHandler.playerIsInClan(playerName))
 			return "&cYou are not in a clan.";
 
-		if (!clanHandler.playerIsClanLeader(playerName))
+		if (!clanHandler.playerIsClanLeader(player))
 			return "&cYou are not the clan leader.";
 
 		clanHandler.disbandClan(clanHandler.getPlayerClan(playerName));

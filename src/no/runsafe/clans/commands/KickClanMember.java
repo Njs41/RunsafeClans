@@ -23,7 +23,7 @@ public class KickClanMember extends PlayerAsyncCommand
 		if (!clanHandler.playerIsInClan(playerName))
 			return "&cYou are not in a clan.";
 
-		if (!clanHandler.playerIsClanLeader(playerName))
+		if (!clanHandler.playerIsClanLeader(executor))
 			return "&cYou are not the clan leader.";
 
 		IPlayer targetPlayer = parameters.getValue("player");
