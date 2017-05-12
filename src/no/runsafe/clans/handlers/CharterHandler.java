@@ -1,15 +1,22 @@
 package no.runsafe.clans.handlers;
 
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.item.meta.RunsafeBook;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class CharterHandler
 {
+	public CharterHandler(IServer server)
+	{
+		this.server = server;
+	}
+
 	public void givePlayerCharter(IPlayer player, String clanName)
 	{
 		RunsafeMeta charter = Item.Special.Crafted.WrittenBook.getItem(); // Create a book item.
@@ -17,7 +24,7 @@ public class CharterHandler
 		charter.addLore("§7Clan: " + clanName); // Append the clan name.
 		charter.addLore("§7Leader: " + player.getName()); // Append the clan leader.
 		charter.addLore("§fRight-click to sign the clan charter!"); // Add some info.
-		addCharterSign(charter, player.getName()); // Sign the charter.
+		addCharterSign(charter, player); // Sign the charter.
 
 		player.give(charter); // Give the player the charter.
 	}
@@ -33,9 +40,9 @@ public class CharterHandler
 		return getCharterValue(charter.getLore(), 0);
 	}
 
-	public String getLeaderName(RunsafeMeta charter)
+	public IPlayer getLeader(RunsafeMeta charter)
 	{
-		return getCharterValue(charter.getLore(), 1);
+		return server.getPlayerExact(getCharterValue(charter.getLore(), 1));
 	}
 
 	private String getCharterValue(List<String> values, int index)
@@ -46,18 +53,25 @@ public class CharterHandler
 		return values.get(index).split("\\s")[1];
 	}
 
-	public List<String> getCharterSigns(RunsafeMeta item)
+	public List<IPlayer> getCharterSigns(RunsafeMeta item)
 	{
 		RunsafeBook charter = (RunsafeBook) item; // Convert item to a book.
 		if (charter.hasPages()) // Check we have some pages.
-			return charter.getPages(); // Return the pages.
-
+		{
+			List<String> charterPages = charter.getPages();
+			List<IPlayer> charterSigns = new ArrayList<IPlayer>(0);
+			for(String page : charterPages)
+				charterSigns.add(server.getPlayerExact(page));
+			return charterSigns;
+		}
 		return Collections.emptyList(); // Return an empty thing.
 	}
 
-	public void addCharterSign(RunsafeMeta item, String playerName)
+	public void addCharterSign(RunsafeMeta item, IPlayer player)
 	{
 		RunsafeBook charter = (RunsafeBook) item; // Convert item to a book.
-		charter.addPages(playerName); // Add the sign to the charter.
+		charter.addPages(player.getName()); // Add the sign to the charter.
 	}
+
+	private final IServer server;
 }

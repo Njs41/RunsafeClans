@@ -51,9 +51,9 @@ public class PlayerMonitor implements IPlayerRightClick
 			return false;
 		}
 
-		List<String> charterSigns = charterHandler.getCharterSigns(usingItem);
+		List<IPlayer> charterSigns = charterHandler.getCharterSigns(usingItem);
 
-		if (charterSigns.contains(playerName))
+		if (charterSigns.contains(player))
 		{
 			player.sendColouredMessage("&cYou have already signed this charter.");
 			player.closeInventory();
@@ -63,15 +63,15 @@ public class PlayerMonitor implements IPlayerRightClick
 		// If we have less than 2 signs on the charter, we should sign it!
 		if (charterSigns.size() < 2)
 		{
-			charterHandler.addCharterSign(usingItem, playerName);
+			charterHandler.addCharterSign(usingItem, player);
 			player.sendColouredMessage("&aYou have signed the charter!");
 		}
 		else
 		{
 			// Make sure all signs are valid.
-			for (String signedPlayer : charterSigns)
+			for (IPlayer signedPlayer : charterSigns)
 			{
-				if (clanHandler.playerIsInClan(signedPlayer))
+				if (clanHandler.playerIsInClan(signedPlayer.getName()))
 				{
 					player.sendColouredMessage("&cOne or more of the signatures on this charter are invalid, get more!");
 					player.closeInventory();
@@ -86,12 +86,12 @@ public class PlayerMonitor implements IPlayerRightClick
 				return false;
 			}
 
-			clanHandler.createClan(clanName, charterHandler.getLeaderName(usingItem)); // Forge the clan!
+			clanHandler.createClan(clanName, charterHandler.getLeader(usingItem).getName()); // Forge the clan!
 
 			// Add all players on the charter to the clan if they are not already in a clan.
-			for (String signedPlayer : charterSigns)
-				if (!clanHandler.playerIsInClan(signedPlayer))
-					clanHandler.addClanMember(clanName, signedPlayer);
+			for (IPlayer signedPlayer : charterSigns)
+				if (!clanHandler.playerIsInClan(signedPlayer.getName()))
+					clanHandler.addClanMember(clanName, signedPlayer.getName());
 
 			clanHandler.addClanMember(clanName, player.getName()); // Add the signing player to the clan.
 			clanHandler.sendMessageToClan(clanName, "Your clan has been formed!");
