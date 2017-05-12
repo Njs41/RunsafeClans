@@ -384,7 +384,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	private void LoadInvitesIntoCache()
 	{
 		playerInvites.clear();
-		playerInvites.putAll(inviteRepository.getPendingInvites()); // Grab pending invites from the database.
+		playerInvites.putAll(inviteRepository.getPendingInviteNames()); // Grab pending invites from the database.
 		List<String> invalidClans = new ArrayList<String>(0);
 
 		for (Map.Entry<String, List<String>> inviteNode : playerInvites.entrySet())
@@ -413,7 +413,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		clans.clear();
 		clans.putAll(clanRepository.getClans()); // Populate a list of clans.
 		playerClanIndex.clear(); // Clear the index.
-		Map<String, List<String>> rosters = memberRepository.getClanRosters(); // Get rosters.
+		Map<String, List<String>> rosters = memberRepository.getClanRosterNames(); // Get rosters.
 
 		// Process the clan rosters into the handler.
 		for (Map.Entry<String, List<String>> roster : rosters.entrySet())

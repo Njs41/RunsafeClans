@@ -1,6 +1,8 @@
 package no.runsafe.clans.database;
 
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.database.*;
+import no.runsafe.framework.api.player.IPlayer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -10,12 +12,14 @@ import java.util.Map;
 
 public class ClanInviteRepository extends Repository
 {
-	public ClanInviteRepository(IDatabase database)
+	public ClanInviteRepository(IDatabase database, IServer server)
 	{
 		this.database = database;
+		this.server = server;
 	}
 
-	public Map<String, List<String>> getPendingInvites()
+	@Deprecated
+	public Map<String, List<String>> getPendingInviteNames()
 	{
 		Map<String, List<String>> map = new HashMap<String, List<String>>(0);
 
@@ -31,14 +35,42 @@ public class ClanInviteRepository extends Repository
 		return map;
 	}
 
+	public Map<IPlayer, List<String>> getPendingInvites()
+	{
+		Map<IPlayer, List<String>> map = new HashMap<IPlayer, List<String>>(0);
+
+		for (IRow row : database.query("SELECT `clanID`, `player` FROM `clan_invites`"))
+		{
+			IPlayer player = server.getPlayerExact(row.String("player"));
+			if (!map.containsKey(player))
+				map.put(player, new ArrayList<String>(0));
+
+			map.get(player).add(row.String("clanID"));
+		}
+
+		return map;
+	}
+
+	@Deprecated
 	public void clearPendingInvite(String playerName, String clanID)
 	{
 		database.execute("DELETE FROM `clan_invites` WHERE `player` = ? AND `clanID` = ?", playerName, clanID);
 	}
 
+	public void clearPendingInvite(IPlayer player, String clanID)
+	{
+		database.execute("DELETE FROM `clan_invites` WHERE `player` = ? AND `clanID` = ?", player.getName(), clanID);
+	}
+
+	@Deprecated
 	public void clearAllPendingInvites(String playerName)
 	{
 		database.execute("DELETE FROM `clan_invites` WHERE `player` = ?", playerName);
+	}
+
+	public void clearAllPendingInvites(IPlayer player)
+	{
+		database.execute("DELETE FROM `clan_invites` WHERE `player` = ?", player.getName());
 	}
 
 	public void clearAllPendingInvitesForClan(String clanID)
@@ -74,4 +106,6 @@ public class ClanInviteRepository extends Repository
 
 		return update;
 	}
+
+	private final IServer server;
 }
