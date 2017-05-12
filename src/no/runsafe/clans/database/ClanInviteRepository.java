@@ -92,13 +92,12 @@ public class ClanInviteRepository extends Repository
 
 	/**
 	 * Invites a player to a clan.
-	 * TODO: make this use an IPlayer object rather than a player name
-	 * @param playerName Name of the player to invite.
+	 * @param player Player to invite.
 	 * @param clanID Clan the user is being invited into.
 	 */
-	public void addInvite(String playerName, String clanID)
+	public void addInvite(IPlayer player, String clanID)
 	{
-		database.execute("INSERT IGNORE INTO `clan_invites` (`player`, `clanID`) VALUES(?, ?)", playerName, clanID);
+		database.execute("INSERT IGNORE INTO `clan_invites` (`player`, `clanID`) VALUES(?, ?)", player.getName(), clanID);
 	}
 
 	/**

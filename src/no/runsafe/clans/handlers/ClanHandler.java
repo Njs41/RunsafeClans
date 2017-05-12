@@ -267,7 +267,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 			playerInvites.put(playerName, new ArrayList<String>(1));
 
 		playerInvites.get(playerName).add(clanID); // Add clan invite to the player.
-		inviteRepository.addInvite(playerName, clanID);
+		inviteRepository.addInvite(player, clanID);
 
 		NotifyNewInvite(clanID, player);
 	}
