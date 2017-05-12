@@ -17,14 +17,13 @@ public class DisbandClan extends PlayerAsyncCommand
 	@Override
 	public String OnAsyncExecute(IPlayer player, IArgumentList parameters)
 	{
-		String playerName = player.getName();
-		if (!clanHandler.playerIsInClan(playerName))
+		if (!clanHandler.playerIsInClan(player))
 			return "&cYou are not in a clan.";
 
 		if (!clanHandler.playerIsClanLeader(player))
 			return "&cYou are not the clan leader.";
 
-		clanHandler.disbandClan(clanHandler.getPlayerClan(playerName));
+		clanHandler.disbandClan(clanHandler.getPlayerClan(player));
 		return "&aYour clan has been disbanded.";
 	}
 

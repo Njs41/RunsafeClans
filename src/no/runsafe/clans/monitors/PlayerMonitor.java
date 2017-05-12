@@ -25,8 +25,7 @@ public class PlayerMonitor implements IPlayerRightClick
 		if (usingItem == null || !usingItem.is(Item.Special.Crafted.WrittenBook) || !charterHandler.itemIsCharter(usingItem))
 			return true;
 
-		String playerName = player.getName(); // Name of the player using the book.
-		if (clanHandler.playerIsInClan(playerName))
+		if (clanHandler.playerIsInClan(player))
 		{
 			player.sendColouredMessage("&cYou are already in a clan, you cannot sign this.");
 			player.closeInventory();
@@ -71,7 +70,7 @@ public class PlayerMonitor implements IPlayerRightClick
 			// Make sure all signs are valid.
 			for (IPlayer signedPlayer : charterSigns)
 			{
-				if (clanHandler.playerIsInClan(signedPlayer.getName()))
+				if (clanHandler.playerIsInClan(signedPlayer))
 				{
 					player.sendColouredMessage("&cOne or more of the signatures on this charter are invalid, get more!");
 					player.closeInventory();
@@ -79,21 +78,21 @@ public class PlayerMonitor implements IPlayerRightClick
 				}
 			}
 
-			if (clanHandler.playerIsInClan(playerName))
+			if (clanHandler.playerIsInClan(player))
 			{
 				player.sendColouredMessage("&cYou are already in a clan!");
 				player.closeInventory();
 				return false;
 			}
 
-			clanHandler.createClan(clanName, charterHandler.getLeader(usingItem).getName()); // Forge the clan!
+			clanHandler.createClan(clanName, charterHandler.getLeader(usingItem)); // Forge the clan!
 
 			// Add all players on the charter to the clan if they are not already in a clan.
 			for (IPlayer signedPlayer : charterSigns)
-				if (!clanHandler.playerIsInClan(signedPlayer.getName()))
-					clanHandler.addClanMember(clanName, signedPlayer.getName());
+				if (!clanHandler.playerIsInClan(signedPlayer))
+					clanHandler.addClanMember(clanName, signedPlayer);
 
-			clanHandler.addClanMember(clanName, player.getName()); // Add the signing player to the clan.
+			clanHandler.addClanMember(clanName, player); // Add the signing player to the clan.
 			clanHandler.sendMessageToClan(clanName, "Your clan has been formed!");
 			player.removeExactItem(usingItem); // Remove the charter.
 		}

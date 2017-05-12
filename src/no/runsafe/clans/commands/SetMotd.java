@@ -20,15 +20,13 @@ public class SetMotd extends PlayerAsyncCommand
 	@Override
 	public String OnAsyncExecute(IPlayer executor, IArgumentList parameters)
 	{
-		String playerName = executor.getName();
-
-		if (!clanHandler.playerIsInClan(playerName))
+		if (!clanHandler.playerIsInClan(executor))
 			return "&cYou are not in a clan.";
 
 		if (!clanHandler.playerIsClanLeader(executor))
 			return "&cYou are not the clan leader.";
 
-		Clan clan = clanHandler.getPlayerClan(playerName);
+		Clan clan = clanHandler.getPlayerClan(executor);
 		if (clan == null)
 			return "&cSomething just broke.";
 

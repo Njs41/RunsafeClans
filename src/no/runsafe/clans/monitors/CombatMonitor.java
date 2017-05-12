@@ -38,32 +38,26 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 	public void OnPlayerDeathEvent(RunsafePlayerDeathEvent event)
 	{
 		IPlayer deadPlayer = event.getEntity();
-		String deadPlayerName = deadPlayer.getName();
 
 		// Check we tracked the player getting hit and they are in a clan!
-		if (!track.containsKey(deadPlayerName) || !clanHandler.playerIsInClan(deadPlayerName))
+		if (!track.containsKey(deadPlayer) || !clanHandler.playerIsInClan(deadPlayer))
 			return;
 
-		String killerName = track.get(deadPlayerName).getAttacker().getName(); // Grab the name of the last player to hit them.
-		if (!clanHandler.playerIsInClan(killerName))
+		IPlayer killer = track.get(deadPlayer).getAttacker(); // Grab the last player to hit them.
+		if (killer == null || !clanHandler.playerIsInClan(killer))
 			return;
 
-		Clan deadPlayerClan = clanHandler.getPlayerClan(deadPlayerName); // Dead players clan.
-		if (clanHandler.playerIsInClan(killerName, deadPlayerClan.getId()))
+		Clan deadPlayerClan = clanHandler.getPlayerClan(deadPlayer); // Dead players clan.
+		if (clanHandler.playerIsInClan(killer, deadPlayerClan.getId()))
 		{
-			IPlayer thePlayer = server.getPlayerExact(killerName);
-
-			if (thePlayer != null)
-			{
-				new BackstabberEvent(thePlayer).Fire();
-				if (clanHandler.playerIsClanLeader(deadPlayer))
-					new MutinyEvent(thePlayer).Fire();
-			}
+			new BackstabberEvent(killer).Fire();
+			if (clanHandler.playerIsClanLeader(deadPlayer))
+				new MutinyEvent(killer).Fire();
 		}
 		else
 		{
-			clanHandler.addClanKill(killerName); // Stat the kill
-			clanHandler.addClanDeath(deadPlayerName); // Stat the death
+			clanHandler.addClanKill(killer); // Stat the kill
+			clanHandler.addClanDeath(deadPlayer); // Stat the death
 		}
 	}
 

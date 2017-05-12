@@ -24,12 +24,10 @@ public class LookupClan extends AsyncCommand
 		if (targetPlayer == null)
 			return "&cInvalid player!";
 
-		String playerName = targetPlayer.getName();
-
-		if (!clanHandler.playerIsInClan(playerName))
+		if (!clanHandler.playerIsInClan(targetPlayer))
 			return "&cThat player is not in a clan.";
 
-		Clan clan = clanHandler.getPlayerClan(playerName);
+		Clan clan = clanHandler.getPlayerClan(targetPlayer);
 
 		return targetPlayer.getPrettyName() + "&f has been a member of " + clan.getId() + " for " + clanHandler.getPlayerJoinString(targetPlayer) + ".";
 	}

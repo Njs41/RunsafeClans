@@ -30,8 +30,7 @@ public class CreateClan extends PlayerAsyncCommand
 		if (clanHandler.clanExists(clanName))
 			return String.format("&cA clan named '%s' already exists.", clanName);
 
-		String playerName = executor.getName();
-		if (clanHandler.playerIsInClan(playerName))
+		if (clanHandler.playerIsInClan(executor))
 			return "&cYou are already in a clan!";
 
 		charterHandler.givePlayerCharter(executor, clanName); // Give them a charter.
