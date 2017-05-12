@@ -48,21 +48,9 @@ public class ClanMemberRepository extends Repository
 		return rosters;
 	}
 
-	@Deprecated
-	public void addClanMember(String clanID, String playerName)
-	{
-		database.execute("INSERT INTO `clan_members` (`clanID`, `member`, `joined`) VALUES(?, ?, NOW())", clanID, playerName);
-	}
-
 	public void addClanMember(String clanID, IPlayer player)
 	{
 		database.execute("INSERT INTO `clan_members` (`clanID`, `member`, `joined`) VALUES(?, ?, NOW())", clanID, player.getName());
-	}
-
-	@Deprecated
-	public void removeClanMemberByName(String playerName)
-	{
-		database.execute("DELETE FROM `clan_members` WHERE `member` = ?", playerName);
 	}
 
 	public void removeClanMember(IPlayer player)

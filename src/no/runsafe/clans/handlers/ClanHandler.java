@@ -145,10 +145,11 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	{
 		removeAllPendingInvites(playerName); // Remove all pending invites.
 		Clan clan = clans.get(clanID);
-		clan.addMember(server.getPlayerExact(playerName)); // Add to cache.
+		IPlayer newMember = server.getPlayerExact(playerName);
+		clan.addMember(newMember); // Add to cache.
 		playerClanIndex.put(playerName, clanID); // Add to index.
-		memberRepository.addClanMember(clan.getId(), playerName);
-		new ClanJoinEvent(server.getPlayerExact(playerName), clan).Fire(); // Fire a join event.
+		memberRepository.addClanMember(clan.getId(), newMember);
+		new ClanJoinEvent(newMember, clan).Fire(); // Fire a join event.
 	}
 
 	public void kickClanMember(IPlayer player, IPlayer kicker)
@@ -178,7 +179,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		String playerName = player.getName();
 		clans.get(clan.getId()).removeMember(player); // Remove from cache.
 		playerClanIndex.remove(playerName); // Remove from index.
-		memberRepository.removeClanMemberByName(player.getName());
+		memberRepository.removeClanMember(player);
 		new ClanLeaveEvent(player, clan).Fire(); // Fire a leave event.
 	}
 
@@ -235,7 +236,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	public void removeAllPendingInvites(String playerName)
 	{
 		playerInvites.remove(playerName); // Remove all pending invites.
-		inviteRepository.clearAllPendingInvites(playerName); // Persist the change in database.
+		inviteRepository.clearAllPendingInvites(server.getPlayerExact(playerName)); // Persist the change in database.
 	}
 
 	public void removePendingInvite(IPlayer player, String clanName)
@@ -244,7 +245,7 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		if (playerInvites.containsKey(playerName))
 			playerInvites.get(playerName).remove(clanName);
 
-		inviteRepository.clearPendingInvite(playerName, clanName);
+		inviteRepository.clearPendingInvite(player, clanName);
 	}
 
 	public void acceptClanInvite(String clanID, IPlayer player)
