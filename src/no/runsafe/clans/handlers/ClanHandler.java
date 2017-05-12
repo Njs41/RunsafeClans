@@ -11,7 +11,6 @@ import no.runsafe.clans.events.ClanKickEvent;
 import no.runsafe.clans.events.ClanLeaveEvent;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
-import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.player.IPlayerCustomEvent;
 import no.runsafe.framework.api.event.player.IPlayerJoinEvent;
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
@@ -43,17 +42,15 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	/**
 	 * Constructor for ClanHandler.
 	 * @param console Console to output data to.
-	 * @param server The server.
 	 * @param scheduler Used for starting tasks.
 	 * @param clanRepository Clan storage.
 	 * @param memberRepository Member storage.
 	 * @param inviteRepository Invited player list.
 	 * @param channelManager Manager of channels.
 	 */
-	public ClanHandler(IConsole console, IServer server, IScheduler scheduler, ClanRepository clanRepository, ClanMemberRepository memberRepository, ClanInviteRepository inviteRepository, IChannelManager channelManager)
+	public ClanHandler(IConsole console, IScheduler scheduler, ClanRepository clanRepository, ClanMemberRepository memberRepository, ClanInviteRepository inviteRepository, IChannelManager channelManager)
 	{
 		this.console = console;
-		this.server = server;
 		this.scheduler = scheduler;
 		this.clanRepository = clanRepository;
 		this.memberRepository = memberRepository;
@@ -566,7 +563,6 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	/* List of player invites. IPlayer: Invited player. List<String>: List of clan IDs being invited to.*/
 	private final Map<IPlayer, List<String>> playerInvites = new ConcurrentHashMap<IPlayer, List<String>>(0);
 	private final IConsole console;
-	private final IServer server;
 	private final IScheduler scheduler;
 	private final ClanRepository clanRepository;
 	private final ClanMemberRepository memberRepository;

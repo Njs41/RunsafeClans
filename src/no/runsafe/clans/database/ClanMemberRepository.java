@@ -27,24 +27,6 @@ public class ClanMemberRepository extends Repository
 	/**
 	 * @return A list of clans, each containing a list of their members.
 	 */
-	@Deprecated
-	public Map<String, List<String>> getClanRosterNames()
-	{
-		Map<String, List<String>> rosters = new ConcurrentHashMap<String, List<String>>(0);
-		for (IRow row : database.query("SELECT `clanID`, `member` FROM `clan_members`"))
-		{
-			String clanName = row.String("clanID");
-			if (!rosters.containsKey(clanName))
-				rosters.put(clanName, new ArrayList<String>(1));
-
-			rosters.get(clanName).add(row.String("member"));
-		}
-		return rosters;
-	}
-
-	/**
-	 * @return A list of clans, each containing a list of their members.
-	 */
 	public Map<String, List<IPlayer>> getClanRosters()
 	{
 		Map<String, List<IPlayer>> rosters = new ConcurrentHashMap<String, List<IPlayer>>(0);

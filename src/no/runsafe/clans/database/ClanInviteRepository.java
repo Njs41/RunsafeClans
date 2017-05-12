@@ -26,26 +26,6 @@ public class ClanInviteRepository extends Repository
 	/**
 	 * @return A list of players being invited to clans, each having a list of clans they are being invited to.
 	 */
-	@Deprecated
-	public Map<String, List<String>> getPendingInviteNames()
-	{
-		Map<String, List<String>> map = new HashMap<String, List<String>>(0);
-
-		for (IRow row : database.query("SELECT `clanID`, `player` FROM `clan_invites`"))
-		{
-			String playerName = row.String("player");
-			if (!map.containsKey(playerName))
-				map.put(playerName, new ArrayList<String>(0));
-
-			map.get(playerName).add(row.String("clanID"));
-		}
-
-		return map;
-	}
-
-	/**
-	 * @return A list of players being invited to clans, each having a list of clans they are being invited to.
-	 */
 	public Map<IPlayer, List<String>> getPendingInvites()
 	{
 		Map<IPlayer, List<String>> map = new HashMap<IPlayer, List<String>>(0);
