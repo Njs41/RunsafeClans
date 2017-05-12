@@ -11,12 +11,21 @@ import java.util.Map;
 
 public class ClanRepository extends Repository
 {
+	/**
+	 * Constructor for the clan repository.
+	 * @param database The database.
+	 * @param server The server. Used for getting a player object from their username and or UUID.
+	 */
 	public ClanRepository(IDatabase database, IServer server)
 	{
 		this.database = database;
 		this.server = server;
 	}
 
+	/**
+	 * Gets a list of all persisting clans.
+	 * @return List of clan names with their respective clan objects.
+	 */
 	public Map<String, Clan> getClans()
 	{
 		Map<String, Clan> clanList = new HashMap<String, Clan>(0);
@@ -33,31 +42,59 @@ public class ClanRepository extends Repository
 		return clanList;
 	}
 
+	/**
+	 * Sets a new Message of the Day.
+	 * @param clanID Clan to set the new motd of.
+	 * @param motd The new Message of the Day.
+	 */
 	public void updateMotd(String clanID, String motd)
 	{
 		database.execute("UPDATE `clans` SET `motd` = ? WHERE `clanID` = ?", motd, clanID);
 	}
 
+	/**
+	 * Deletes a clan.
+	 * @param clanID Clan to delete.
+	 */
 	public void deleteClan(String clanID)
 	{
 		database.execute("DELETE FROM `clans` WHERE `clanID` = ?", clanID);
 	}
 
+	/**
+	 * Changes a clan leader.
+	 * @param clanID Clan that's under new leadership.
+	 * @param leader Player to rule over the clan.
+	 */
 	public void changeClanLeader(String clanID, IPlayer leader)
 	{
 		database.execute("UPDATE `clans` SET `leader` = ? WHERE `clanID` = ?", leader.getName(), clanID);
 	}
 
+	/**
+	 * Make sure the clan is loaded in the database.
+	 * @param clan Object to load into the database.
+	 */
 	public void persistClan(Clan clan)
 	{
 		database.execute("INSERT INTO `clans` (`clanID`, `leader`, `created`, `motd`) VALUES(?, ?, NOW(), ?)", clan.getId(), clan.getLeader(), clan.getMotd());
 	}
 
+	/**
+	 * Updates a single clan statistic.
+	 * @param clanID The clan to update the statistic of.
+	 * @param statistic Name of the statistic to update. Statistics include:
+	 *                  clanKills, clanDeaths, and dergonKills.
+	 * @param value Value to update the statistic to.
+	 */
 	public void updateStatistic(String clanID, String statistic, int value)
 	{
 		database.execute("UPDATE `clans` SET `" + statistic + "` = ? WHERE `clanID` = ?", value, clanID);
 	}
 
+	/**
+	 * @return The table name where clans and their information is stored.
+	 */
 	@Override
 	@Nonnull
 	public String getTableName()
@@ -65,6 +102,9 @@ public class ClanRepository extends Repository
 		return "clans";
 	}
 
+	/**
+	 * @return The SQL statements for upgrading the database table.
+	 */
 	@Override
 	@Nonnull
 	public ISchemaUpdate getSchemaUpdateQueries()

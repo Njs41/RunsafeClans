@@ -40,6 +40,16 @@ import java.util.regex.Pattern;
 
 public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, IPlayerJoinEvent, IPlayerQuitEvent, IPlayerCustomEvent
 {
+	/**
+	 * Constructor for ClanHandler.
+	 * @param console Console to output data to.
+	 * @param server The server.
+	 * @param scheduler Used for starting tasks.
+	 * @param clanRepository Clan storage.
+	 * @param memberRepository Member storage.
+	 * @param inviteRepository Invited player list.
+	 * @param channelManager Manager of channels.
+	 */
 	public ClanHandler(IConsole console, IServer server, IScheduler scheduler, ClanRepository clanRepository, ClanMemberRepository memberRepository, ClanInviteRepository inviteRepository, IChannelManager channelManager)
 	{
 		this.console = console;
@@ -51,6 +61,10 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		this.channelManager = channelManager;
 	}
 
+	/**
+	 * Handles configuration changes.
+	 * @param config New configuration settings.
+	 */
 	@Override
 	public void OnConfigurationChanged(IConfiguration config)
 	{
@@ -59,6 +73,11 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		LoadInvitesIntoCache();
 	}
 
+	/**
+	 * Gets player data to be used by plugins that need it.
+	 * @param player User to get data from.
+	 * @return The player's current clan and their join date.
+	 */
 	@Override
 	public Map<String, String> GetPlayerData(IPlayer player)
 	{
@@ -69,11 +88,21 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		return data;
 	}
 
+	/**
+	 * Gets the date the player has joined a clan in String format.
+	 * @param player User to get join date from.
+	 * @return Join date in the form of a string.
+	 */
 	public String getPlayerJoinString(IPlayer player)
 	{
 		return formatTime(memberRepository.getClanMemberJoinDate(player));
 	}
 
+	/**
+	 * Handles custom events for this plugin.
+	 * Events handled are: ClanJoinEvent, ClanLeaveEvent, and ClanKickEvent.
+	 * @param event The event to handle.
+	 */
 	@Override
 	public void OnPlayerCustomEvent(RunsafeCustomEvent event)
 	{
@@ -99,6 +128,11 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 		}
 	}
 
+	/**
+	 * Handles player joining.
+	 * Will not do anything if the event is fake.
+	 * @param event The event to handle.
+	 */
 	@Override
 	public void OnPlayerJoinEvent(RunsafePlayerJoinEvent event)
 	{
@@ -114,6 +148,11 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 			processClanMemberConnected(player);
 	}
 
+	/**
+	 * Handles player log-out.
+	 * Will not do anything if the event is fake or if the player is not in a clan.
+	 * @param event The event to handle.
+	 */
 	@Override
 	public void OnPlayerQuit(RunsafePlayerQuitEvent event)
 	{
@@ -525,8 +564,11 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	}
 
 	private String clanTagFormat;
+	/* List of clans. String: Clan name. Clan: The clan's object. */
 	private final Map<String, Clan> clans = new ConcurrentHashMap<String, Clan>(0);
+	/* List of clan members and the clan they are in. String: Member username. String: Clan ID. */
 	private final Map<String, String> playerClanIndex = new ConcurrentHashMap<String, String>(0);
+	/* List of player invites. String: Invited player's username. List<String>: List of clan IDs being invited to.*/
 	private final Map<String, List<String>> playerInvites = new ConcurrentHashMap<String, List<String>>(0);
 	private final IConsole console;
 	private final IServer server;

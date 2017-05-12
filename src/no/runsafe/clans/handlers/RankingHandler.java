@@ -8,11 +8,18 @@ import java.util.*;
 
 public class RankingHandler implements IConfigurationChanged
 {
+	/**
+	 * Constructor for handling clan ranks.
+	 * @param clanHandler Object that handles clans.
+	 */
 	public RankingHandler(ClanHandler clanHandler)
 	{
 		this.clanHandler = clanHandler;
 	}
 
+	/**
+	 * @return List of clan names ordered from highest ranked first to lowest ranked last.
+	 */
 	public List<String> getRankingRoster()
 	{
 		Map<String, Clan> clanMap = clanHandler.getClans();
@@ -35,6 +42,13 @@ public class RankingHandler implements IConfigurationChanged
 		return ordered;
 	}
 
+	/**
+	 * Used to sort clans.
+	 * @param map List to sort.
+	 * @param <K> Clan name.
+	 * @param <V> Score to sort by.
+	 * @return Sorted list.
+	 */
 	public static <K extends Comparable,V extends Comparable> LinkedHashMap<K,V> sortByValues(Map<K,V> map)
 	{
 		List<Map.Entry<K,V>> entries = new LinkedList<Map.Entry<K,V>>(map.entrySet());
@@ -56,6 +70,10 @@ public class RankingHandler implements IConfigurationChanged
 		return sortedMap;
 	}
 
+	/**
+	 * Handles configuration changes.
+	 * @param config New configurations.
+	 */
 	@Override
 	public void OnConfigurationChanged(IConfiguration config)
 	{
