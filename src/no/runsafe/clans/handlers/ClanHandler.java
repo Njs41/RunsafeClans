@@ -251,7 +251,6 @@ public class ClanHandler implements IConfigurationChanged, IPlayerDataProvider, 
 	 */
 	private void removeClanMember(Clan clan, IPlayer player)
 	{
-		String playerName = player.getName();
 		clans.get(clan.getId()).removeMember(player); // Remove from cache.
 		playerClanIndex.remove(player); // Remove from index.
 		memberRepository.removeClanMember(player);
