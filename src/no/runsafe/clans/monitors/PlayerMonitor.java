@@ -2,30 +2,28 @@ package no.runsafe.clans.monitors;
 
 import no.runsafe.clans.handlers.CharterHandler;
 import no.runsafe.clans.handlers.ClanHandler;
-import no.runsafe.framework.api.IConfiguration;
-import no.runsafe.framework.api.IUniverse;
+import no.runsafe.clans.handlers.UniverseHandler;
 import no.runsafe.framework.api.block.IBlock;
 import no.runsafe.framework.api.event.player.IPlayerRightClick;
-import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class PlayerMonitor implements IPlayerRightClick, IConfigurationChanged
+public class PlayerMonitor implements IPlayerRightClick
 {
 	/**
 	 * Constructor for monitoring player right click events.
 	 * @param charterHandler Handles charters.
 	 * @param clanHandler Handles clans.
+	 * @param universeHandler Used to check if players are in the correct world.
 	 */
-	public PlayerMonitor(CharterHandler charterHandler, ClanHandler clanHandler)
+	public PlayerMonitor(CharterHandler charterHandler, ClanHandler clanHandler, UniverseHandler universeHandler)
 	{
 		this.charterHandler = charterHandler;
 		this.clanHandler = clanHandler;
+		this.universeHandler = universeHandler;
 	}
 
 	/**
@@ -40,12 +38,10 @@ public class PlayerMonitor implements IPlayerRightClick, IConfigurationChanged
 	public boolean OnPlayerRightClick(IPlayer player, RunsafeMeta usingItem, IBlock targetBlock)
 	{
 		// Check we are holding a charter and are in the correct world.
-		IUniverse universe = player.getUniverse();
 		if (usingItem == null
 			|| !usingItem.is(Item.Special.Crafted.WrittenBook)
 			|| !charterHandler.itemIsCharter(usingItem)
-			|| universe == null
-			|| !clanUniverses.contains(universe.getName())
+			|| universeHandler.isInClanWorld(player)
 		)
 			return true;
 
@@ -124,18 +120,7 @@ public class PlayerMonitor implements IPlayerRightClick, IConfigurationChanged
 		return false;
 	}
 
-	/**
-	 * Handles configuration changes.
-	 * @param config New configurations.
-	 */
-	@Override
-	public void OnConfigurationChanged(IConfiguration config)
-	{
-		clanUniverses.clear();
-		Collections.addAll(clanUniverses, config.getConfigValueAsString("clanUniverse").split(","));
-	}
-
 	private final CharterHandler charterHandler;
 	private final ClanHandler clanHandler;
-	private List<String> clanUniverses = new ArrayList<String>(0);
+	private final UniverseHandler universeHandler;
 }

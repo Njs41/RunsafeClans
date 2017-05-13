@@ -7,6 +7,7 @@ import no.runsafe.clans.database.ClanRepository;
 import no.runsafe.clans.handlers.CharterHandler;
 import no.runsafe.clans.handlers.ClanHandler;
 import no.runsafe.clans.handlers.RankingHandler;
+import no.runsafe.clans.handlers.UniverseHandler;
 import no.runsafe.clans.monitors.CombatMonitor;
 import no.runsafe.clans.monitors.DergonKillMonitor;
 import no.runsafe.clans.monitors.PlayerMonitor;
@@ -38,6 +39,7 @@ public class RunsafeClans extends RunsafeConfigurablePlugin
 		addComponent(ClanHandler.class);
 		addComponent(PlayerMonitor.class);
 		addComponent(CombatMonitor.class);
+		addComponent(UniverseHandler.class);
 		addComponent(RankingHandler.class);
 		addComponent(DergonKillMonitor.class);
 

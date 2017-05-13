@@ -4,13 +4,11 @@ import no.runsafe.clans.Clan;
 import no.runsafe.clans.events.BackstabberEvent;
 import no.runsafe.clans.events.MutinyEvent;
 import no.runsafe.clans.handlers.ClanHandler;
-import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.clans.handlers.UniverseHandler;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.IServer;
-import no.runsafe.framework.api.IUniverse;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
 import no.runsafe.framework.api.event.player.IPlayerDeathEvent;
-import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.entity.ProjectileEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
@@ -19,23 +17,23 @@ import no.runsafe.framework.minecraft.entity.RunsafeProjectile;
 import no.runsafe.framework.minecraft.event.entity.RunsafeEntityDamageByEntityEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerDeathEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEvent, IConfigurationChanged
+public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEvent
 {
 	/**
 	 * Constructor for monitoring combat.
 	 * @param server The server.
-	 ** @param scheduler Used for starting tasks.
+	 * @param scheduler Used for starting tasks.
 	 * @param clanHandler Handles clans.
+	 * @param universeHandler Used to check if players are in the correct world.
 	 */
-	public CombatMonitor(IServer server, IScheduler scheduler, ClanHandler clanHandler)
+	public CombatMonitor(IServer server, IScheduler scheduler, ClanHandler clanHandler, UniverseHandler universeHandler)
 	{
 		this.server = server;
 		this.scheduler = scheduler;
+		this.universeHandler = universeHandler;
 		this.clanHandler = clanHandler;
 	}
 
@@ -80,8 +78,7 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		if (victim.isVanished())
 			return;
 
-		IUniverse universe = victim.getUniverse();
-		if (universe == null || !clanUniverses.contains(universe.getName()))
+		if (!universeHandler.isInClanWorld(victim))
 			return;
 
 		IPlayer source = null;
@@ -138,20 +135,11 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		return null;
 	}
 
-	/**
-	 * Handles configuration changes.
-	 * @param config New configurations.
-	 */
-	@Override
-	public void OnConfigurationChanged(IConfiguration config)
-	{
-		clanUniverses.clear();
-		Collections.addAll(clanUniverses, config.getConfigValueAsString("clanUniverse").split(","));
-	}
+
 
 	private final IServer server;
 	private final IScheduler scheduler;
 	private final ClanHandler clanHandler;
-	private List<String> clanUniverses = new ArrayList<String>(0);
+	private final UniverseHandler universeHandler;
 	private final ConcurrentHashMap<String, CombatTrackingNode> track = new ConcurrentHashMap<String, CombatTrackingNode>(0);
 }
