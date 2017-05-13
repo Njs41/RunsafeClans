@@ -6,11 +6,19 @@ import no.runsafe.framework.minecraft.event.player.RunsafeCustomEvent;
 
 public class DergonKillMonitor implements IPlayerCustomEvent
 {
+	/**
+	 * Constructor for handling dergon kills.
+	 * @param handler Handles clans.
+	 */
 	public DergonKillMonitor(ClanHandler handler)
 	{
 		this.handler = handler;
 	}
 
+	/**
+	 * Adds a dergon kill to a clan's statistics.
+	 * @param event Event to handle.
+	 */
 	@Override
 	public void OnPlayerCustomEvent(RunsafeCustomEvent event)
 	{

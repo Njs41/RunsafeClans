@@ -9,6 +9,13 @@ import javax.annotation.Nullable;
 
 public class ClanChannel extends BasicChatChannel
 {
+	/**
+	 * Constructor for clan chat channels.
+	 * @param console Place to output data.
+	 * @param manager Channel manager.
+	 * @param name What the channel is clled.
+	 * @param handler Handles clans.
+	 */
 	public ClanChannel(IConsole console, IChannelManager manager, String name, ClanHandler handler)
 	{
 		super(console, manager, name);

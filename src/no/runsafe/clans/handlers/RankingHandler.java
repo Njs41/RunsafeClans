@@ -72,7 +72,7 @@ public class RankingHandler implements IConfigurationChanged
 
 	/**
 	 * Handles configuration changes.
-	 * @param config New configurations.
+	 * @param config New configuration.
 	 */
 	@Override
 	public void OnConfigurationChanged(IConfiguration config)

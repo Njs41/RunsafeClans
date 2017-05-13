@@ -12,12 +12,24 @@ import java.util.List;
 
 public class PlayerMonitor implements IPlayerRightClick
 {
+	/**
+	 * Constructor for monitoring player right click events.
+	 * @param charterHandler Handles charters.
+	 * @param clanHandler Handles clans.
+	 */
 	public PlayerMonitor(CharterHandler charterHandler, ClanHandler clanHandler)
 	{
 		this.charterHandler = charterHandler;
 		this.clanHandler = clanHandler;
 	}
 
+	/**
+	 * Handles players trying to use clan charters.
+	 * @param player User trying to use a charter.
+	 * @param usingItem Potential clan charter.
+	 * @param targetBlock Required argument; not used.
+	 * @return True if player isn't trying to use a charter.
+	 */
 	@Override
 	public boolean OnPlayerRightClick(IPlayer player, RunsafeMeta usingItem, IBlock targetBlock)
 	{

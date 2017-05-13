@@ -26,6 +26,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEvent, IConfigurationChanged
 {
+	/**
+	 * Constructor for monitoring combat.
+	 * @param server The server.
+	 ** @param scheduler Used for starting tasks.
+	 * @param clanHandler Handles clans.
+	 */
 	public CombatMonitor(IServer server, IScheduler scheduler, ClanHandler clanHandler)
 	{
 		this.server = server;
@@ -60,6 +66,10 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		}
 	}
 
+	/**
+	 * Deal with players attacking other players.
+	 * @param event Event to handle.
+	 */
 	@Override
 	public void OnEntityDamageByEntity(RunsafeEntityDamageByEntityEvent event)
 	{
@@ -92,6 +102,11 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		registerHit(victim, source); // Register the hit!
 	}
 
+	/**
+	 * Registers a hit.
+	 * @param victim
+	 * @param attacker
+	 */
 	private void registerHit(IPlayer victim, IPlayer attacker)
 	{
 		final String victimName = victim.getName();
@@ -123,6 +138,10 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		return null;
 	}
 
+	/**
+	 * Handles configuration changes.
+	 * @param config New configurations.
+	 */
 	@Override
 	public void OnConfigurationChanged(IConfiguration config)
 	{

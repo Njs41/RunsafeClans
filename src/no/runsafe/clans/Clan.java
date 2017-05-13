@@ -7,6 +7,12 @@ import java.util.List;
 
 public class Clan
 {
+	/**
+	 * Constructor for clans.
+	 * @param id The clan's name, three capital letters.
+	 * @param leader The leader of the clan.
+	 * @param motd Message of the day.
+	 */
 	public Clan(String id, IPlayer leader, String motd)
 	{
 		this.id = id;
