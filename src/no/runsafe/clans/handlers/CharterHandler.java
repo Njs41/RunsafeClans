@@ -9,6 +9,7 @@ import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class CharterHandler
 {
@@ -91,7 +92,8 @@ public class CharterHandler
 	/**
 	 * Gets a list of the players who have signed a charter.
 	 * Assumes item passed to it is a legitimate clan charter.
-	 * Assumes there is only a single valid username on each page of the charter.
+	 * Assumes there is only a single valid UUID or username on each page of the charter.
+	 * Only checks if what's on each page is an expected length to be a UUID or username.
 	 * @param item Charter to check.
 	 * @return List of players who have signed the charter.
 	 */
@@ -103,14 +105,17 @@ public class CharterHandler
 			List<String> charterPages = charter.getPages();
 			List<IPlayer> charterSigns = new ArrayList<IPlayer>(0);
 			for(String page : charterPages)
-				charterSigns.add(server.getPlayerExact(page));
+				if (page.length() == 36) // Check if what's written on the page is likely a UUID.
+					charterSigns.add(server.getPlayer(UUID.fromString(page)));
+				else if (page.length() <= 16) // Check if what's written on the page is likely a username.
+					charterSigns.add(server.getPlayerExact(page));
 			return charterSigns;
 		}
 		return Collections.emptyList(); // Return an empty thing.
 	}
 
 	/**
-	 * Adds a player signature to a charter in the form of their username.
+	 * Adds a player signature to a charter in the form of their UUID.
 	 * Assumes item passed to it is a legitimate clan charter.
 	 * @param item Charter to sign.
 	 * @param player User signing the charter.
@@ -118,7 +123,7 @@ public class CharterHandler
 	public void addCharterSign(RunsafeMeta item, IPlayer player)
 	{
 		RunsafeBook charter = (RunsafeBook) item; // Convert item to a book.
-		charter.addPages(player.getName()); // Add the sign to the charter.
+		charter.addPages(player.getUniqueId().toString()); // Add the sign to the charter.
 	}
 
 	private final IServer server;
