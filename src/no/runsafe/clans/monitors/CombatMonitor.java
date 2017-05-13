@@ -104,23 +104,21 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 	 * @param victim
 	 * @param attacker
 	 */
-	private void registerHit(IPlayer victim, IPlayer attacker)
+	private void registerHit(final IPlayer victim, IPlayer attacker)
 	{
-		final String victimName = victim.getName();
-
 		// Check to see if we have a timer existing.
-		if (track.containsKey(victimName))
-			scheduler.cancelTask(track.get(victimName).getTimerID()); // Cancel existing timer.
+		if (track.containsKey(victim))
+			scheduler.cancelTask(track.get(victim).getTimerID()); // Cancel existing timer.
 		else
-			track.put(victimName, new CombatTrackingNode()); // Create blank node.
+			track.put(victim, new CombatTrackingNode()); // Create blank node.
 
 		// Update the node with new information.
-		track.get(victimName).setAttacker(attacker).setTimerID(scheduler.startAsyncTask(new Runnable()
+		track.get(victim).setAttacker(attacker).setTimerID(scheduler.startAsyncTask(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				track.remove(victimName); // Remove after 10 seconds.
+				track.remove(victim); // Remove after 10 seconds.
 			}
 		}, 10));
 	}
@@ -141,5 +139,5 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 	private final IScheduler scheduler;
 	private final ClanHandler clanHandler;
 	private final UniverseHandler universeHandler;
-	private final ConcurrentHashMap<String, CombatTrackingNode> track = new ConcurrentHashMap<String, CombatTrackingNode>(0);
+	private final ConcurrentHashMap<IPlayer, CombatTrackingNode> track = new ConcurrentHashMap<IPlayer, CombatTrackingNode>(0);
 }
