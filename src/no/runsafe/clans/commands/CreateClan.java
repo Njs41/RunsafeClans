@@ -2,6 +2,7 @@ package no.runsafe.clans.commands;
 
 import no.runsafe.clans.handlers.CharterHandler;
 import no.runsafe.clans.handlers.ClanHandler;
+import no.runsafe.clans.handlers.UniverseHandler;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.command.argument.IArgumentList;
 import no.runsafe.framework.api.command.argument.RequiredArgument;
@@ -10,16 +11,21 @@ import no.runsafe.framework.api.player.IPlayer;
 
 public class CreateClan extends PlayerAsyncCommand
 {
-	public CreateClan(IScheduler scheduler, ClanHandler clanHandler, CharterHandler charterHandler)
+	public CreateClan(IScheduler scheduler, ClanHandler clanHandler, CharterHandler charterHandler, UniverseHandler universeHandler)
 	{
 		super("create", "Create a clan", "runsafe.clans.create", scheduler, new RequiredArgument("clanTag"));
 		this.clanHandler = clanHandler;
 		this.charterHandler = charterHandler;
+		this.universeHandler = universeHandler;
 	}
 
 	@Override
 	public String OnAsyncExecute(IPlayer executor, IArgumentList parameters)
 	{
+		// Check if player is in a correct world first.
+		if (!universeHandler.isInClanWorld(executor))
+			return "&cYou are not in the correct world! Go to survival to create a clan.";
+
 		String clanName = parameters.get("clanTag").toUpperCase();
 
 		// Check we have been given a valid clan name.
@@ -39,4 +45,5 @@ public class CreateClan extends PlayerAsyncCommand
 
 	private final ClanHandler clanHandler;
 	private final CharterHandler charterHandler;
+	private final UniverseHandler universeHandler;
 }
