@@ -2,15 +2,20 @@ package no.runsafe.clans.monitors;
 
 import no.runsafe.clans.handlers.CharterHandler;
 import no.runsafe.clans.handlers.ClanHandler;
+import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IUniverse;
 import no.runsafe.framework.api.block.IBlock;
 import no.runsafe.framework.api.event.player.IPlayerRightClick;
+import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class PlayerMonitor implements IPlayerRightClick
+public class PlayerMonitor implements IPlayerRightClick, IConfigurationChanged
 {
 	/**
 	 * Constructor for monitoring player right click events.
@@ -25,6 +30,7 @@ public class PlayerMonitor implements IPlayerRightClick
 
 	/**
 	 * Handles players trying to use clan charters.
+	 * Only allows players to sign the charter if they are in the correct world.
 	 * @param player User trying to use a charter.
 	 * @param usingItem Potential clan charter.
 	 * @param targetBlock Required argument; not used.
@@ -33,8 +39,14 @@ public class PlayerMonitor implements IPlayerRightClick
 	@Override
 	public boolean OnPlayerRightClick(IPlayer player, RunsafeMeta usingItem, IBlock targetBlock)
 	{
-		// Check we are holding a charter.
-		if (usingItem == null || !usingItem.is(Item.Special.Crafted.WrittenBook) || !charterHandler.itemIsCharter(usingItem))
+		// Check we are holding a charter and are in the correct world.
+		IUniverse universe = player.getUniverse();
+		if (usingItem == null
+			|| !usingItem.is(Item.Special.Crafted.WrittenBook)
+			|| !charterHandler.itemIsCharter(usingItem)
+			|| universe == null
+			|| !clanUniverses.contains(universe.getName())
+		)
 			return true;
 
 		if (clanHandler.playerIsInClan(player))
@@ -112,6 +124,18 @@ public class PlayerMonitor implements IPlayerRightClick
 		return false;
 	}
 
+	/**
+	 * Handles configuration changes.
+	 * @param config New configurations.
+	 */
+	@Override
+	public void OnConfigurationChanged(IConfiguration config)
+	{
+		clanUniverses.clear();
+		Collections.addAll(clanUniverses, config.getConfigValueAsString("clanUniverse").split(","));
+	}
+
 	private final CharterHandler charterHandler;
 	private final ClanHandler clanHandler;
+	private List<String> clanUniverses = new ArrayList<String>(0);
 }
