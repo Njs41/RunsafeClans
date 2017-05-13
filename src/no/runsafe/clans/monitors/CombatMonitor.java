@@ -142,8 +142,6 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		return null;
 	}
 
-
-
 	private final IServer server;
 	private final IScheduler scheduler;
 	private final ClanHandler clanHandler;
