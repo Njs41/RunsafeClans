@@ -37,6 +37,10 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		this.clanHandler = clanHandler;
 	}
 
+	/**
+	 * Handle the player death event.
+	 * @param event Event to handle.
+	 */
 	@Override
 	public void OnPlayerDeathEvent(RunsafePlayerDeathEvent event)
 	{
@@ -101,8 +105,8 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 
 	/**
 	 * Registers a hit.
-	 * @param victim
-	 * @param attacker
+	 * @param victim Player getting attacked.
+	 * @param attacker Player attacking.
 	 */
 	private void registerHit(final IPlayer victim, IPlayer attacker)
 	{
@@ -123,6 +127,11 @@ public class CombatMonitor implements IEntityDamageByEntityEvent, IPlayerDeathEv
 		}, 10));
 	}
 
+	/**
+	 * Gets a player based on a RunsafeLivingEntity.
+	 * @param entity Potential player.
+	 * @return A player if the entity has the same entity ID as an online player, otherwise null.
+	 */
 	private IPlayer findPlayer(RunsafeLivingEntity entity)
 	{
 		List<IPlayer> onlinePlayers = server.getOnlinePlayers();
