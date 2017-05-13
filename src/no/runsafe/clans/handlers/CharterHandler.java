@@ -70,7 +70,7 @@ public class CharterHandler
 	 */
 	public IPlayer getLeader(RunsafeMeta charter)
 	{
-		return server.getPlayerExact(getCharterValue(charter.getLore(), 1));
+		return getCharterSigns(charter).get(0);
 	}
 
 	/**
